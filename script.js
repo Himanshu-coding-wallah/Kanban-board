@@ -22,7 +22,8 @@ addTask.addEventListener("click", (e)=>{
 function displayTask(){
     allTask.forEach((task)=>{
         const listItem = document.createElement("li")
-        listItem.innerHTML=`${task.text} <button id="${task.id}">edit</button> <button id="${task.id}">delete</button>`
+        listItem.innerHTML=`<span>${task.text}</span>
+ <button id="${task.id}">edit</button> <button id="${task.id}">delete</button>`
         taskList.append(listItem)
         textInput.value=""
     })
