@@ -33,6 +33,16 @@ body {
   letter-spacing: 1px;
 }
 
+form{
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+#text-input{
+  width: 100%;
+}
+
 /* Columns Layout */
 .list-container {
   display: flex;
@@ -46,7 +56,7 @@ body {
 .in-progress-list,
 .completed-list {
   flex: 1;
-  min-height: 300px;
+  height: 300px;
   max-width: 33%;
   background: #3a3f4b;
   padding: 15px;
@@ -54,6 +64,7 @@ body {
   display: flex;
   flex-direction: column;
   gap: 12px;
+
 }
 
 /* Column Titles */
@@ -68,18 +79,23 @@ body {
   color: #9aa0ac;
 }
 
-.todo-list::before { content: "Todo"; }
-.in-progress-list::before { content: "In Progress"; }
-.completed-list::before { content: "Completed"; }
+.todo{
+  overflow-y: auto;   /* Makes vertical scroll */
+  scrollbar-width: none;
 
+}
 /* Remove default ul style */
-#task-list {
+#task-list1,
+#task-list2,
+#task-list3 {
   list-style: none;
   padding: 0;
+  min-height: 150px;   /* IMPORTANT */
 }
 
+
 /* Task Card */
-#task-list li {
+#task-list1 li {
   background: #4a5060;
   padding: 10px;
   margin-bottom: 10px;
@@ -96,14 +112,14 @@ body {
   overflow-wrap: break-word; /* ensure wrapping */
 }
 
-#task-list li span {
+#task-list1 li span {
   flex: 1;          /* take available space */
   min-width: 0;     /* prevents flex overflow */
   white-space: normal;
 }
 
 
-#task-list li:hover {
+#task-list1 li:hover {
   background: #586074;
   transform: scale(1.02);
 }
