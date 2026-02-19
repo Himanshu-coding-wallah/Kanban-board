@@ -25,6 +25,22 @@ body {
   border-radius: 12px;
   box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
 }
+#clear-task{
+  width: 100%;
+  text-align: center;
+}
+#clear-task button{
+  padding: 16px;
+  text-align: center;
+}
+.container {
+  width: 90%;
+  max-width: 1100px;
+  background: #2c2f3a;
+  padding: 25px;
+  border-radius: 12px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
+}
 
 .container h2 {
   text-align: center;
@@ -85,17 +101,15 @@ form{
 
 }
 /* Remove default ul style */
-#task-list1,
-#task-list2,
-#task-list3 {
+.liStyle{
   list-style: none;
   padding: 0;
-  min-height: 150px;   /* IMPORTANT */
+  min-height: 250px;   /* IMPORTANT */
 }
 
 
 /* Task Card */
-#task-list1 li {
+.liStyle li {
   background: #4a5060;
   padding: 10px;
   margin-bottom: 10px;
@@ -112,14 +126,14 @@ form{
   overflow-wrap: break-word; /* ensure wrapping */
 }
 
-#task-list1 li span {
+.liStyle li span {
   flex: 1;          /* take available space */
   min-width: 0;     /* prevents flex overflow */
   white-space: normal;
 }
 
 
-#task-list1 li:hover {
+.liStyle li:hover {
   background: #586074;
   transform: scale(1.02);
 }
@@ -141,7 +155,7 @@ button:hover {
 }
 
 /* Smaller buttons inside task */
-#task-list li button {
+.liStyle li button {
   margin-left: 8px;
   padding: 5px 10px;
   font-size: 12px;

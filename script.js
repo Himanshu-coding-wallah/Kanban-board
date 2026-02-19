@@ -3,21 +3,47 @@ const taskList1 = document.getElementById("task-list1")
 let taskList2 = document.getElementById("task-list2")
 let taskList3 = document.getElementById("task-list3")
 let textInput = document.getElementById("text-input")
+let container = document.getElementById("container")
+let clearAll = document.getElementById("clear-all")
 
-let allTask = []
+
+let allTask = JSON.parse(localStorage.getItem("task")) || []
+displayTask()
+
+
 let editingId = null
 let selected = null
+
+clearAll.addEventListener("click", ()=>{
+
+    if(allTask.length ===0){
+        window.alert("List is empty")
+    }else{
+        const ans = window.confirm("do you really want to delete all")
+    
+        if(ans){
+            allTask.length =0
+            taskList1.innerHTML=""
+            taskList2.innerHTML=""
+            taskList3.innerHTML=""
+            localStorage.clear()
+        }
+    }
+})
+
 
 addTask.addEventListener("click", (e)=>{
     e.preventDefault()
     if(editingId === null){
         const task = textInput.value.trim()
         if(task !==""){
-            let taskItem={
+            let taskItem = {
                 id: Date.now(),
-                text:task,
+                text: task,
+                column: "task-list1"   // store which column it belongs to
             }
             allTask.push(taskItem)
+            addLocal()
         }
         taskList1.innerHTML=""
         displayTask()
@@ -27,48 +53,90 @@ addTask.addEventListener("click", (e)=>{
     }
 })
 
-// rendering tasks
-function displayTask(){
-    allTask.forEach((task)=>{
+function displayTask() {
+
+    // Clear all lists first
+    taskList1.innerHTML = ""
+    taskList2.innerHTML = ""
+    taskList3.innerHTML = ""
+
+    allTask.forEach((task) => {
+
         const listItem = document.createElement("li")
         listItem.setAttribute("draggable", "true")
-        listItem.innerHTML=
-        `<span>${task.text}</span>
-        <button id="${task.id}">edit</button> 
-        <button id="${task.id}">delete</button>`
-        taskList1.append(listItem)
-        textInput.value=""
+        listItem.dataset.id = task.id
 
-        // drag start
-        listItem.addEventListener("dragstart",(e)=>{
+        listItem.innerHTML = `
+            <span>${task.text}</span>
+            <button data-action="edit" data-id="${task.id}">Edit</button>
+            <button data-action="delete" data-id="${task.id}">Delete</button>
+        `
+
+        // Append to correct column
+        document.getElementById(task.column).appendChild(listItem)
+
+        listItem.addEventListener("dragstart", () => {
             selected = listItem
-            console.log(selected);
-            
         })
     })
+
+    textInput.value = ""
 }
 
-// deleting and editing tasks
-taskList1.addEventListener("click", (e)=>{
-    if(e.target.tagName === "BUTTON" && e.target.textContent === "delete"){
-        const taskId = parseInt(e.target.id)
-        let items = allTask.filter((task) =>(task.id !== taskId))
-        allTask.length=0
-        allTask=[...items]
-        taskList1.innerHTML=""
-        displayTask()    
-    }else if(e.target.tagName === "BUTTON" && e.target.textContent === "edit"){
-        const taskId = parseInt(e.target.id)
-        editingId=taskId
+        
+const taskLists = [taskList1, taskList2, taskList3]
 
-        allTask.forEach(task =>{
-            if(task.id === taskId){
-                let editingText = task.text
-                textInput.value = editingText
-            }
-        })
-    }
+taskLists.forEach(list => {
+
+    // Edit & Delete
+    list.addEventListener("click", (e) => {
+
+        const action = e.target.dataset.action
+        const taskId = parseInt(e.target.dataset.id)
+
+        if (!action) return
+
+        if (action === "delete") {
+            allTask = allTask.filter(task => task.id !== taskId)
+            localStorage.clear()
+            addLocal()
+            displayTask()
+        }
+
+        if (action === "edit") {
+            editingId = taskId
+            const task = allTask.find(task => task.id === taskId)
+            if (task) textInput.value = task.text
+            
+        }
+    })
+
+    // Drag over
+    list.addEventListener("dragover", (e) => {
+        e.preventDefault()
+    })
+
+    // Drop
+    list.addEventListener("drop", (e) => {
+        e.preventDefault()
+
+        if (selected) {
+            const taskId = parseInt(selected.dataset.id)
+
+            // Update column in array
+            allTask.forEach(task => {
+                if (task.id === taskId) {
+                    task.column = list.id
+                }
+            })
+
+            selected = null
+            addLocal()        
+            displayTask()
+        }
+    })
 })
+
 
 function editingTask(editingText,editId){
     allTask.forEach(task =>{
@@ -78,37 +146,11 @@ function editingTask(editingText,editId){
     })
     editingId=null
     taskList1.innerHTML = ""
+    localStorage.clear()
+    addLocal()
     displayTask()
 }
 
-
-taskList2.addEventListener("dragover",(e)=>{
-    e.preventDefault()
-})
-taskList2.addEventListener("drop",(e)=>{
-    e.preventDefault()
-    if(selected){
-        taskList2.appendChild(selected)
-        selected = null
-    }
-})
-taskList1.addEventListener("dragover",(e)=>{
-    e.preventDefault()
-})
-taskList1.addEventListener("drop",(e)=>{
-    e.preventDefault()
-    if(selected){
-        taskList1.appendChild(selected)
-        selected = null
-    }
-})
-taskList3.addEventListener("dragover",(e)=>{
-    e.preventDefault()
-})
-taskList3.addEventListener("drop",(e)=>{
-    e.preventDefault()
-    if(selected){
-        taskList3.appendChild(selected)
-        selected = null
-    }
-})
+function addLocal(){
+    localStorage.setItem("task", JSON.stringify(allTask))
+}
