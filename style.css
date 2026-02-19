@@ -150,4 +150,18 @@ input {
   .list-container {
     flex-direction: column;
   }
+
+.todo-list,
+.in-progress-list,
+.completed-list {
+  flex: 1;
+  min-height: 300px;
+  max-width: 100%;
+  background: #3a3f4b;
+  padding: 15px;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
 }

@@ -1,21 +1,30 @@
 const addTask = document.getElementById("add-task")
 const taskList = document.getElementById("task-list")
-const textInput = document.getElementById("text-input")
+let textInput = document.getElementById("text-input")
 
 let allTask = []
+let editingId = null
+
 addTask.addEventListener("click", (e)=>{
     e.preventDefault()
-    const task = textInput.value.trim()
-    if(task !==""){
-        let taskItem = document.createElement("object")
-        taskItem={
-            id: Date.now(),
-            text:task,
+    if(editingId === null){
+        const task = textInput.value.trim()
+        if(task !==""){
+            let taskItem = document.createElement("object")
+            taskItem={
+                id: Date.now(),
+                text:task,
+            }
+            allTask.push(taskItem)
         }
-        allTask.push(taskItem)
+        taskList.innerHTML=""
+        displayTask()
+    }else{
+        let editingText = textInput.value.trim()
+        editingTask(editingText,editingId)
+        console.log(editingText);
+        
     }
-    taskList.innerHTML=""
-    displayTask()
 })
 
 // rendering tasks
@@ -40,8 +49,25 @@ taskList.addEventListener("click", (e)=>{
         displayTask()    
     }else if(e.target.tagName === "BUTTON" && e.target.textContent === "edit"){
         const taskId = parseInt(e.target.id)
-       
-        
+        editingId=taskId
+
+        allTask.forEach(task =>{
+            if(task.id === taskId){
+                let editingText = task.text
+                textInput.value = editingText
+            }
+        })
+    }
+})
+
+function editingTask(editingText,editId){
+    allTask.forEach(task =>{
+    if(task.id === editId){
+        task.text = editingText
     }
     })
+    editingId=null
+    taskList.innerHTML = ""
 
+    displayTask()
+}
